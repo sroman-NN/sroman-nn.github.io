@@ -1,0 +1,231 @@
+body {
+    background: #0082fe;
+    margin: 0;
+    padding: 0;
+    font-family: 'CoolveticaLocal';
+    letter-spacing: 0.5px;
+    color: white;
+    background: url("back-gmod.png") center center no-repeat fixed;
+     
+    background-repeat: no-repeat;
+background-position: center;
+background-size: cover;
+
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+}
+
+.header img {
+    width: 141px;
+    height: 121px;
+    margin-right: 3px;
+    user-select: none;
+    pointer-events: none;
+    -webkit-user-drag: none;
+}
+
+.header h1 {
+    font-size: 32px;
+    margin: 0;
+    color: white;
+    letter-spacing: 1.5px;
+}
+
+
+.content {
+    padding: 20px;
+    max-width: 900px;
+}
+
+.content p {
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+@font-face {
+    font-family: 'CoolveticaLocal';
+    src: url('Coolvetica Rg.woff2') format('woff2'),
+         url('Coolvetica Rg.woff') format('woff');
+}
+
+strong {
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+a {
+    color: #fff;
+    text-decoration: none;
+    border: 1px solid #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.1); 
+}
+
+a:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.open-src-bd {
+    position: fixed;
+    top:40px;
+    right: 70px;
+    z-index: 10;
+     user-select: none;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    transform: scale(2.0);
+}
+
+.big-box {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 380px;
+    height: 80vh;
+    background: #292929; 
+    border-radius: 12px;
+    padding: 20px;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.big-box h3 {
+    margin: 0 0 10px 0;
+    color: #ffffff;
+}
+
+.big-box hr {
+    border: none;
+    border-top: 1px solid #ffffff;
+    margin: 10px 0 20px 0;
+}
+
+.item-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #494949;
+    border: 1px solid #000;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+    text-decoration: none;
+    color: #ffffff;
+    border-radius: 0; 
+}
+
+.item-btn img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+
+.code-area {
+    display: inline-flex;
+    align-items: center;
+    background: #1a1a1a;
+    border: 1px solid #000;
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: #fff;
+    gap: 10px;
+     max-width: 90%;
+}
+
+.code-area pre {
+    margin: 0;
+    overflow-x: auto;
+   
+
+}
+
+.code-area pre::-webkit-scrollbar {
+    height: 6px;
+}
+
+.code-area pre::-webkit-scrollbar-track {
+    background: #d0d0d0;
+}
+
+.code-area pre::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+.copy-btn {
+    background: #333;
+    border: 1px solid #000;
+    color: #fff;
+    padding: 4px 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.copy-btn:hover {
+    background: #555;
+    cursor: pointer;
+}
+
+
+#google_translate_element img {
+    display: none !important;
+}
+
+
+.goog-te-gadget-simple {
+    background: #292929 !important; 
+    border: 1px solid #000 !important;
+    padding: 6px 10px !important;
+    border-radius: 4px !important;
+    font-family: 'CoolveticaLocal', sans-serif !important;
+    letter-spacing: 1px !important;
+    color: #fff !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+
+.goog-te-gadget-simple span {
+    color: #fff !important;
+    font-size: 16px !important;
+}
+
+
+.goog-te-combo {
+    background: #494949 !important; 
+    color: #fff !important;
+    border: 1px solid #000 !important;
+    padding: 4px 6px !important;
+    border-radius: 2px !important;
+    font-family: 'CoolveticaLocal', sans-serif !important;
+    letter-spacing: 1px !important;
+    cursor: pointer !important;
+}
+
+
+.goog-te-combo:hover {
+    background: #5a5a5a !important;
+}
+
+
+
+
+
+
+
+
