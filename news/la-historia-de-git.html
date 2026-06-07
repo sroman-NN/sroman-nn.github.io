@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <!-- ------open graph------- -->
+  <meta property="og:title" content="The History of Git">
+  <meta property="og:type" content="article">
+  <meta property="og:description" content="The history of the most used version control system in the world, Git.">
+  <meta property="og:image" content=" https://sroman-nn.github.io/imagenes/aticulos/la-historia-de-git/git-history-banner.jpg">
+  <!-- ------open graph------- -->
+
+    <!-- ----------------------------------google translate------------------------------- -->
+  <div id="google_translate_element"></div>
+  <meta name="google" content="notranslate">
+  
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'es',
+    autoDisplay: true
+  }, 'google_translate_element');
+}
+</script>
+
+
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <!-- ----------------------------------google translate------------------------------- -->
+
+    
+    <title>La  historia de Git</title>
+      <link rel="stylesheet" href="../stilacho.css" />
+</head>
+
+  <div class="header">
+    <img src="../imagenes/aticulos/la-historia-de-git/git-history-banner.jpg" alt="Banner Git">
+</div>
+
+<div class="contenido-art">
+
+
+    <p>Si eres programador, estudiante de informática o de cualquier rama derivada, seguro conoces <a href="https://es.wikipedia.org/wiki/Git" target="_blank">Git</a>, el sistema de control de versiones más usado del mundo. Pero lo que probablemente no conoces sea su historia, sus orígenes y, tal vez, ni siquiera qué tan importante es realmente.</p>
+
+    <p>Aunque por alguna razón se le percibe como un servicio muy sencillo, la verdad es que hay una buena dosis de magia detrás de Git. Su concepción no nació de la noche a la mañana; duró unos años en gestarse, pero muy poco en desarrollarse.</p>
+
+    <br>
+
+    <strong>La era arcaica del Kernel de Linux</strong>
+
+    <p>Por allá por el año 2002, <a href="https://es.wikipedia.org/wiki/Linus_Torvalds" target="_blank">Linus Torvalds</a> —sí, el mismo creador del kernel llamado <a href="https://www.kernel.org/" target="_blank">Linux</a>— se encargaba de darle mantenimiento, actualizaciones y parches a su sistema. La manera en la que lo hacía era, cuanto menos, arcaica. Simplemente recibía correos en una lista pública con archivos punto patch o punto diff. Estos eran archivos de texto plano que él insertaba en el código usando el comando patch de <a href="https://es.wikipedia.org/wiki/Unix" target="_blank">Unix</a>. Luego, revisaba y compilaba manualmente. Si todo funcionaba, lo aceptaba y guardaba.</p>
+
+    <p>Y así lo hacía con cada aporte que recibía. Como bien sabrán, el proyecto empezó a crecer tanto que, tarde o temprano, Linus ya no pudo darse abasto. ¡La cantidad de desarrolladores aportando al kernel generaba cientos de propuestas al día!</p>
+
+    <br>
+
+    <strong>El drama de BitKeeper: Del amor al odio</strong>
+
+    <p>No fue sino hasta 2005 que la comunidad de Linux empezó a usar un software comercial llamado <strong>BitKeeper</strong>. El dueño de este software permitió que los desarrolladores de Linux lo usaran de forma totalmente gratuita, pero con una condición muy específica: no intentar hacer <a href="https://es.wikipedia.org/wiki/Ingenier%C3%ADa_inversa" target="_blank">ingeniería inversa</a> para competir contra ellos.</p>
+
+    <p>A pesar del pequeño frenazo sentimental que implicaba para la comunidad del <a href="https://es.wikipedia.org/wiki/C%C3%B3digo_abierto" target="_blank">código abierto</a> usar un software comercial y no poder hacer una versión libre, aceptaron. Al fin y al cabo, el sistema era muy eficiente y, sobre todo, rápido.</p>
+
+    <p>Pero poco duraría esta asociación. Ese mismo año, uno de los desarrolladores, <a href="https://en.wikipedia.org/wiki/Andrew_Tridgell" target="_blank">Andrew Tridgell</a> (creador de <a href="https://www.samba.org/" target="_blank">Samba</a>), no se pudo resistir y decidió escribir un script de tan solo unas 300 líneas. Su meta era entender cómo se comunicaba BitKeeper para hacer un cliente libre que se conectara a sus servidores. Esto calificaba totalmente como ingeniería inversa, y no una insignificante, sino una que exponía parte esencial del proceso de comunicación del cliente con el servidor.</p>
+
+    <p>El dueño de BitKeeper, Larry McVoy, se enteró de esto y pasó del amor al odio en un segundo. Ese mismo día le arrebató el servicio gratuito a toda la comunidad de Linux. De la noche a la mañana, el proyecto de código abierto más grande del mundo se quedó sin un sistema de control de versiones.</p>
+
+    <br>
+
+    <strong>La búsqueda de una alternativa</strong>
+
+    <p>Volver al caótico sistema de correos electrónicos era inviable. Había que conseguir otro administrador de versiones igual de eficiente o mejor que BitKeeper. Así que el mismísimo Linus Torvalds decidió encargarse del asunto personalmente y probó las alternativas del momento.</p>
+
+    <p>Primero evaluó <a href="https://es.wikipedia.org/wiki/Concurrent_Versions_System" target="_blank">CVS</a> y <a href="https://es.wikipedia.org/wiki/Apache_Subversion" target="_blank">Subversion (SVN)</a>, que eran los reyes del mercado. Pero estos funcionaban con un modelo centralizado; es decir, con un solo servidor central. Si querías ver el historial, hacer un commit o crear una rama, estabas obligado a tener conexión a internet y solicitar permiso al servidor. Era un proceso lento y, si el servidor se caía, nadie podía trabajar.</p>
+
+    <p>Otra alternativa fue <a href="https://en.wikipedia.org/wiki/Monotone_(software)" target="_blank">Monotone</a> y <a href="https://en.wikipedia.org/wiki/GNU_arch" target="_blank">GNU Arch</a>. Estos sistemas distribuidos le daban una copia de la historia completa a cada ordenador. Fueron la inspiración directa para Git, pero tenían un grave problema: el rendimiento. El kernel de Linux requería procesar miles de archivos in milisegundos, y estos programas eran desesperadamente lentos.</p>
+
+    <p>Al no encontrar ninguna alternativa que ofrecierea velocidad, descentralización y seguridad, Linus decidió crear su propio sistema.</p>
+
+    <br>
+
+    <strong>El "Sprint" de 10 días</strong>
+
+    <p>En lugar de intentar hacer un control de versiones común, diseñó primero una base de datos conocida como <em>Content Addressable File System</em> (sistema de archivos direccionable por contenido). No tenía comandos complejos, sino miniprogramas en <a href="https://es.wikipedia.org/wiki/C_(lenguaje_de_programaci%C3%B3n)" target="_blank">lenguaje C</a> que conectabas por medio de la terminal, como update-cache, write-tree y commit-tree.</p>
+
+    <p>And aquí viene la parte más importante: el desarrollo de Git como tal. En internet se dice que Linus programó esta herramienta en tan solo 10 días, y en efecto, así fue:</p>
+
+    <ul>
+        <li><strong>En el Día 1</strong> (el 3 de abril de 2005), programó las bases: una simple herramienta que guardaba capturas instantáneas (snapshots) de sus códigos.</li>
+        <li><strong>En el Día 3</strong>, el sistema ya era capaz de guardar archivos bajo nombres internos generados en <a href="https://es.wikipedia.org/wiki/SHA-1" target="_blank">SHA-1</a> y enlazarlos a esas capturas. Así es como nace el <strong>Commit</strong>.</li>
+        <li><strong>En el Día 4</strong>, lanzó su hito histórico: anunció el proyecto en la lista de correos de Linux, usando el mismísimo sistema Git para registrar los cambios del propio Git.</li>
+        <li><strong>Y en el décimo día</strong>, se logró el milagro de la fusión, también conocido como el <strong>Merge</strong>: unir el código de dos programadores de forma automática y ultra rápida.</li>
+    </ul>
+
+    <p>¡Así nació Git en solo 10 días! Aunque no era la herramienta amigable que conocemos hoy, sino algo más complejo y técnico, con el paso de los meses se fue puliendo hasta llegar a los comandos actuales como git status o git checkout.</p>
+
+    <p>Para más inri, apenas tres meses después de esta increíble hazaña, Linus simplemente se marchó. Le entregó las llaves del proyecto a <a href="https://en.wikipedia.org/wiki/Junio_Hamano" target="_blank">Junio Hamano</a>, un desarrollador japonés que se convirtió en el colaborador número uno y mantenedor de Git hasta el sol de hoy, mientras Linus regresó a atender su verdadero bebé: Linux.</p>
+
+    <br>
+
+    <strong>Git hoy en día: El motor invisible</strong>
+
+    <p>Mucha gente a día de hoy suele confundir Git con una plataforma web, y está muy lejos de ser eso. Git es, por completo, una utilidad de código abierto. Puedes conseguir su código fuente de forma totalmente libre, modificarlo, incorporarlo a tus proyectos o colaborar en su desarrollo.</p>
+
+    <p>Muestra de ello es que motores de videojuegos como <a href="https://godotengine.org/" target="_blank">Godot</a> y <a href="https://www.unrealengine.com/" target="_blank">Unreal Engine</a>, editores como <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a>, e incluso la mismísima empresa <a href="https://www.spacex.com/" target="_blank">SpaceX</a> lo utilizan dentro de sus operaciones. Si eres programador o creador de juegos, seguramente has visto en tu editor líneas verdes o azules cuando añades o eliminas código. ¡Eso es Git trabajando incrustado en tiempo real!</p>
+
+    <p>Por esta misma razón, más adelante <a href="https://es.wikipedia.org/wiki/Microsoft" target="_blank">Microsoft</a> se involucró de cabeza en este mundo. Sí, la misma empresa que en su momento fue el enemigo más grande del open source y que llegó a catalogar a Linux como un "cáncer", terminó adoptando estas herramientas para catapultar su propio editor, Visual Studio Code, al éxito.</p>
+
+    <br>
+
+    <strong>El gran malentendido: GitHub</strong>
+
+    <p>Como ya dijimos, Git y <a href="https://es.wikipedia.org/wiki/GitHub" target="_blank">GitHub</a> son cosas totalmente distintas. En el año 2008, tres desarrolladores (<a href="https://en.wikipedia.org/wiki/Tom_Preston-Werner" target="_blank">Tom Preston-Werner</a>, <a href="https://en.wikipedia.org/wiki/Chris_Wanstrath" target="_blank">Chris Wanstrath</a> y <a href="https://en.wikipedia.org/wiki/PJ_Hyett" target="_blank">PJ Hyett</a>) vieron una oportunidad de negocio excelente. Hasta ese momento, Git era una herramienta de consola un poco rebuscada que requería servidores propios. Lo que ellos hicieron fue crear GitHub: una plataforma web que funciona como un host fácil de usar, con interfaz gráfica y sazonado con atributos de una red social para programadores.</p>
+
+    <p>¿Recuerdan que mencioné a Microsoft? En el año 2018, Microsoft compró GitHub por 7.500 millones de dólares para terminar de dominar el mercado de las herramientas de desarrollo.</p>
+
+    <p>Y esta es la verdadera historia de Git: una sutil pero poderosa herramienta de control de datos que mueve todo el mundo de la tecnología y seguramente será así para siempre.</p>
+<!-- ------video------- -->
+<div class="vid-iframe" ">
+<iframe width="100%" height="480" src="https://playmogo.com/e/f8gq3yg72h5l" scrolling="no" frameborder="0" allowfullscreen="true"></iframe>
+</div>
+<!-- ------scripts------- -->
+
+    <div class="articulo-footer">
+        <a href="../articulos.html" class="btn-back">volver a la lista de articulos</a>
+        <button class="btn-share" onclick="compartir()">Compartir</button>
+    </div>
+</div>
+
+
+    <!-- ------scripts------- -->
+    <script src="share.js"></script>
+    <!-- ------scripts------- -->
+</body>
+</html>

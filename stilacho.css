@@ -306,6 +306,19 @@ h1 {
     margin-bottom: 12px;
 }
 
+strong{
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+}
+
+ul{
+    color: #000;
+    background: #eeeeee;
+    border: 1px solid #3b3b3b;
+    padding: 12px;
+}
+
 .art-img {
     width: 180px;
     height: 120px;
