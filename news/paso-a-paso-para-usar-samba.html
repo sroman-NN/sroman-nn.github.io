@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+    <!-- ------open graph------- -->
+  <meta property="og:title" content="Como usar samba para compartir carpetas de Linux a Windows">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content=" https://sroman-nn.github.io/og-images/samba.jpg">
+  <!-- ------open graph------- -->
+
+    <!-- ----------------------------------google translate------------------------------- -->
+  <div id="google_translate_element"></div>
+  <meta name="google" content="notranslate">
+  
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'es',
+    autoDisplay: true
+  }, 'google_translate_element');
+}
+</script>
+
+
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <!-- ----------------------------------google translate------------------------------- -->
+
+    
+    <title>Configuración e Integración de Samba (Linux a Windows)</title>
+      <link rel="stylesheet" href="../stilacho.css" />
+        <link rel="icon" type="image/x-icon" href="yo.ico">
+</head>
+
+  <div class="header">
+</div>
+
+<div class="contenido-art">
+
+        <h1>Guía : Compartir carpetas de Linux a Windows con Samba</h1>
+
+        <p>Si necesitás acceder a archivos alojados en tu servidor o PC con Linux desde una red local en Windows, <strong>Samba</strong> es el estándar definitivo[cite: 6]. Acá econtraras el paso a paso exacto para configurar los recursos compartidos, gestionar permisos y conectar Windows facilmente[cite: 6].</p>
+
+        <h2>1. Configuración de Samba (Linux)</h2>
+        <p>El archivo de configuración principal de Samba se encuentra en <code>/etc/samba/smb.conf</code>[cite: 6]. Para compartir una carpeta, debes añadir una sección al final del archivo con la siguiente estructura básica[cite: 6]:</p>
+         
+        este es solo un ejemplo yo tengo 3 carpetas ustedes pueden escoger solo una
+        <pre>
+[documentos]
+   path = /home/tuusuario/Documentos
+   browseable = yes
+   read only = no
+   guest ok = no
+   valid users = hilo
+
+[dev]
+   path = /home/tuusuario/dev
+   browseable = yes
+   read only = no
+   guest ok = no
+   valid users = hilo
+
+[imagenes]
+   path = /home/tuusuario/Imágenes
+   browseable = yes
+   read only = no
+   guest ok = no
+   valid users = hilo</pre>
+
+        <h3>Comandos útiles para gestionar Samba</h3>
+        <ul>
+            <li>
+                <strong>Verificar errores en el archivo de configuración:</strong>[cite: 6]
+                <pre>testparm</pre>
+            </li>
+            <li>
+                <strong>Reiniciar el servicio (en sistemas basados en Debian):</strong>[cite: 6]
+                <pre>sudo systemctl restart smbd</pre>
+            </li>
+            <li>
+                <strong>Crear un usuario de Samba (necesario para que Windows pueda autenticarse):</strong>[cite: 6]
+                <pre>sudo smbpasswd -a tu_usuario</pre>
+            </li>
+        </ul>
+
+        <div class="highlight">
+            <strong>Dato Técnico:</strong> El usuario de Samba debe existir previamente como usuario del sistema operativo Linux para que <code>smbpasswd</code> pueda habilitarlo correctamente.
+        </div>
+
+        <h2>2. Cómo obtener la dirección IP o el nombre de red en Linux</h2>
+        <p>Para conectarte desde otro equipo, necesitas conocer la dirección IP de tu máquina Linux[cite: 6]. Puedes obtenerla con los siguientes comandos[cite: 6]:</p>
+
+        <ul>
+            <li>
+                <strong>Ver la IP local:</strong>[cite: 6]
+                <pre>ip a</pre>
+                <p><i>(Busca la interfaz de red activa, por ejemplo <code>eth0</code>(ehternet) o <code>wlan0</code>(wireless), junto a la etiqueta <code>inet</code>)[cite: 6].</i></p>
+            </li>
+            <li>
+                <strong>Ver el nombre del host (equipo):</strong>[cite: 6]
+                <pre>hostname</pre>
+            </li>
+        </ul>
+
+        <h2>3. Cómo escribir la ruta de conexión en Windows</h2>
+        <p>Una vez que tienes la IP de tu servidor Linux (por ejemplo, <code>100.100.1.50</code>) y el nombre del recurso compartido que definiste en el archivo <code>smb.conf</code> (por ejemplo, <code>NombreCompartido</code>), tienes varias formas de escribirlo en Windows[cite: 6]:</p>
+
+        <h3>Opción A: Desde el Explorador de archivos (Barra de direcciones)</h3>
+        <p>Abre cualquier carpeta o el Explorador de archivos y escribe directamente en la barra superior[cite: 6]:</p>
+        <pre>\\100.100.1.50\NombreCompartido</pre>
+        <p><i>(También puedes usar el nombre del host de Linux en lugar de la IP, por ejemplo: <code>\\mi-servidor\NombreCompartido</code>)[cite: 6].</i></p>
+
+        <h3>Opción B: Usando la ventana "Ejecutar"</h3>
+        <p>Es una de las formas más rápidas[cite: 6]:</p>
+        <ol>
+            <li>Presiona las teclas <strong>Windows + R</strong>[cite: 6].</li>
+            <li>Escribe la ruta con barras invertidas dobles[cite: 6]:
+                <pre>\\100.100.1.50\NombreCompartido</pre>
+            </li>
+            <li>Presiona <strong>Enter</strong>[cite: 6].</li>
+        </ol>
+
+        <h3>Opción C:,<strong>|Recomendada|</strong> Mapear como Unidad de Red (para tenerla siempre visible)</h3>
+        <ol>
+            <li>Abre el Explorador de archivos y haz clic en <strong>Este equipo</strong>[cite: 6].</li>
+            <li>En la pestaña superior, selecciona <strong>Conectar a unidad de red</strong>[cite: 6].</li>
+            <li>Elige una letra para la unidad (ej. <code>Z:</code>)[cite: 6].</li>
+            <li>En la casilla <strong>Carpeta</strong>, escribe la ruta[cite: 6]:
+                <pre>\\100.100.1.50\NombreCompartido</pre>
+            </li>
+            <li>Marca la opción <strong>Conectar de nuevo al iniciar sesión</strong> si deseas que se guarde, introduce tus credenciales de samba cuando te las pida y haz clic en <strong>Finalizar</strong>[cite: 6].</li>
+        </ol>
+
+        <h2>Conclusión</h2>
+        <p>Configurar la red local no requiere mucho trabajo[cite: 6]. usando samba , cualquier equipo Windows en la misma red se monta al instante[cite: 6].</p>
+
+    <!-- ------scripts------- -->
+    <div class="articulo-footer">
+        <a href="../articulos.html" class="btn-back">volver a la lista de articulos</a>
+        <button class="btn-share" onclick="compartir()">Compartir</button>
+    </div>
+</div>
+
+
+    <!-- ------scripts------- -->
+    <script src="share.js"></script>
+    <!-- ------scripts------- -->
+</body>
+</html>

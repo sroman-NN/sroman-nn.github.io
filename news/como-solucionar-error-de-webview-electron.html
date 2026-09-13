@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+
+      <!-- ------open graph------- -->
+  <meta property="og:title" content="Error commun (webview electron)">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content=" https://sroman-nn.github.io/og-images/electron-y-webview.png">
+  <!-- ------open graph------- -->
+
+    <!-- ----------------------------------google translate------------------------------- -->
+  <div id="google_translate_element"></div>
+  <meta name="google" content="notranslate">
+  
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'es',
+    autoDisplay: true
+  }, 'google_translate_element');
+}
+</script>
+
+
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <!-- ----------------------------------google translate------------------------------- -->
+
+    
+    <title>Solucion error de webview en electron</title>
+      <link rel="stylesheet" href="../stilacho.css" />
+        <link rel="icon" type="image/x-icon" href="yo.ico">
+</head>
+
+  <div class="header">
+</div>
+
+<div class="contenido-art">
+
+        <h1>Solución Definitiva: El WebView de Electron no llena el contenedor</h1>
+
+        <p>Si estás desarrollando con Electron y el tag <code>&lt;webview&gt;</code> se queda con un tamaño minúsculo (usualmente 300x150 o simplemente no llena el 100%), no estás solo. Es uno de los bugs de renderizado más frustrantes y persistentes del framework.</p>
+
+        <h2>¿Cuál es el Problema?</h2>
+        <p>El problema es que el elemento <strong>&lt;webview&gt;</strong> no es un tag HTML estándar; es un componente que Electron inyecta usando un <strong>Shadow DOM</strong> complejo. A menudo, el "Guest Renderer" (el proceso que renderiza el contenido dentro del webview) no sincroniza correctamente sus dimensiones con el "Window Host" (la ventana principal) durante el primer renderizado o tras cambios dinámicos.</p>
+
+        <h2>¿Dónde es Común?</h2>
+        <ul>
+            <li>Estructuras basadas en <strong>Flexbox</strong> donde el webview tiene <code>flex: 1</code>.</li>
+            <li>Aplicaciones que ocultan/muestran/redimensionan el webview dinámicamente (<code>display: none</code>).</li>
+            <li>Versiones recientes de Electron que han endurecido el aislamiento de procesos.</li>
+        </ul>
+
+        <h2>¿Por qué sucede?</h2>
+        <p>Sucede porque el motor de Chromium espera un evento de <strong>layout reflw</strong> para recalcular el tamaño del GuestView. Si el contenedor padre se expande de forma fluida (como en Flexbox), a veces el WebView "se duerme" y mantiene sus dimensiones por defecto, ignorando las reglas de CSS de su contenedor padre.</p>
+
+        <div class="highlight">
+            <strong>Dato Técnico:</strong> El Shadow DOM del webview a veces no hereda correctamente el <code>height: 100%</code> si el ancestro no tiene una altura física explícita calculada en el momento del "attach".
+        </div>
+
+        <h2>La Solución (HardSoftware)</h2>
+        <p>Para solucionarlo de forma infalible, hay que atacar dos frentes: <strong>Estructura Rígida</strong> y <strong>Despertador de Layout</strong>.</p>
+
+        <h3>1. CSS Grid (Estructura Rígida)</h3>
+        <p>En lugar de Flexbox, usa <strong>CSS Grid</strong> en el contenedor principal. Grid impone dimensiones exactas en celdas, lo que fuerza al motor de renderizado a reconocer el espacio disponible.</p>
+        <pre>
+body {
+    display: grid;
+    grid-template-rows: 40px 1fr; /* Barra superior fija, resto para el webview */
+    height: 100vh;
+    margin: 0;
+}
+
+webview {
+    grid-row: 2;
+    width: 100%;
+    height: 100%;
+}</pre>
+
+        <h3>2.Despertador de Layout</h3>
+        <p>Incluso con Grid, el webview puede necesitar un recordatorio. Dispara un evento de <code>resize</code> manual después de que el elemento se muestre o se adjunte al DOM.</p>
+        <pre>
+function fixWebView() {
+    webview.style.display = "flex"; // Forzar visibilidad
+    setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+    }, 50); // 50ms son suficientes para despertar al GuestRendererr
+}</pre>
+
+        <h2>Conclusión</h2>
+        <p>No funcionan metodos estandares como con <code>calc()</code> o alturas fijas en píxeles. <strong>Debe usar Grid para definir el área y Resize para forzar el renderizado.</strong> Es la única forma de manipular satisfactoriamente las dimensiones del  WebView de manera dinamica.</p>
+<!-- ------scripts------- -->
+
+    <div class="articulo-footer">
+        <a href="../articulos.html" class="btn-back">volver a la lista de articulos</a>
+        <button class="btn-share" onclick="compartir()">Compartir</button>
+    </div>
+</div>
+
+
+    <!-- ------scripts------- -->
+    <script src="share.js"></script>
+    <!-- ------scripts------- -->
+</body>
+</html>
