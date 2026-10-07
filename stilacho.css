@@ -271,6 +271,15 @@ h1 {
     user-select: none;
 }
 
+.thumb3 {
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    border: 1px solid #999;
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
 .info h3 {
     margin: 0;
     font-size: 14px;
