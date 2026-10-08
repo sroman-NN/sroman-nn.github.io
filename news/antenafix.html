@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>antena generica usb danada</title>
+  <link rel="stylesheet" href="../stilacho.css" />
+  <link rel="icon" type="image/x-icon" href="../imagenes/iconosX/chip.png">
+</head>
+ <body>
+
+   <!-- ------open graph------- -->
+  <meta property="og:title" content="Antena USB RTL8188">
+  <meta property="og:type" content="article">
+  <meta property="og:description" content="Solucion a antenas genericas que conectan pero no permiten navegar (Conectada sin internet)">
+  <meta property="og:image" content=" https://sroman-nn.github.io/og-images/antenagenerica.jpg">
+  <!-- ------open graph------- -->
+
+
+    <!-- ----------------------------------google translate------------------------------- -->
+  <div id="google_translate_element"></div>
+  <meta name="google" content="notranslate">
+
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'es',
+    autoDisplay: true
+  }, 'google_translate_element');
+}
+</script>
+
+
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <!-- ----------------------------------google translate------------------------------- -->
+
+  <div class="contenido-art">
+
+  <h1>Fix_Antena_RTL8188</h1>
+
+  <hr>
+
+  <h2>Enlcae de radio activa pero sin red o (sin internet conectado)</h2>
+  <p>
+    Compre una antena Wi-Fi USB genérica barata basada en un chipt <strong>Realtek RTL8188FTV</strong> (o <strong>RTL8188FU</strong>). al conectarlo a mi computadora con Windows 11, detecto todas las redes inalambricas del  pero al seleccionar mi red, introducir la pass , la antena se asocia al router en segundos... o micro pero inmediatamente centro de red me muestra el estado:
+  </p>
+  
+  <div class="box-alert">
+    <strong>Estado de red:</strong> "Sin Internet, protegida" /o "Conectado, sin acceso a red".
+  </div>
+
+  <p>Al abrir la consola y ejecutar <code>ipconfig</code>, veo el típico problema:</p>
+  <ul>
+    <li><strong>Dirección IPv4:</strong> <code>169.254.X.X</code> (Rango de configuración automática APIPA).</li>
+    <li><strong>Puerta de enlace predeterminada:</strong> <em>Vacía</em>.</li>
+  </ul>
+
+  <p>Intente los pasos comunes para resolver el problema como :</p>
+  <ol>
+    <li><strong>Reiniciar el modem/router:</strong> No resultados.</li>
+    <li><strong>Configurar IP estatica manualmente:</strong> Le asigne <code>200.190.X.X</code> con mascara <code>255.255.255.0</code> y gateway <code>192.168.1.1</code>. al probar el resultado el mismo :sigue  sin haber ping a la puerta de enlace ni resolucion de nombres DNS.</li>
+    <li><strong>limpiar adaptadores de red viejos:</strong> borre dispositivos ocultos y adaptadores fantasma en el administrador de dispositivos, reinstalar todo , sigue igual.</li>
+  </ol>
+
+  <p>
+    como puede un adaptador conectarse fisicamente por radio al router con 70% de senal, pero no ser capaz de transmitir o recibir ni un solo paquete?
+  </p>
+
+  <hr>
+
+  <h2>revisar bajo nivel , efuse y memoria de quemado</h2>
+  <p>
+    a este punto que nada funcionaba y estaba seguro no era hardware pense consultar los datos del adaptador en PowerShell con <code>Get-NetAdapter</code>:
+  </p>
+
+<pre>Name             : Wi-Fi 2
+InterfaceDesc    : Realtek RTL8188FTV Wireless LAN 802.11n USB 2.0 Network Adapter
+MacAddress       : 00-00-00-00-00-00
+PermanentAddress : 000000000000</pre>
+
+  <p>
+    Y al ver el identificador de instancia en el bus USBb con <code>pnputil</code>:
+  </p>
+
+<pre>Id. de instancia: USB\VID_0BDA&PID_F179\000000000000</pre>
+
+  <p>
+    La direccion fisica permanente del adaptador o MAC es <strong>00:00:00:00:00:00</strong>!.. para entender la causa de este peculiar problema fue necesario investigar sobre bajo nivel
+  </p>
+
+  <h3>¿que es  la memoria eFuse?</h3>
+  <p>
+    Los circuitos integrados inalambricos de bajo costo no incorporan memorias flash ni EEPROMs externas por razones de espacio físico en la placa y costos de fabricacion. een su lugar, el chip Realtek incorpora una matriz interna de <strong>eFuse (Fusibles Electrónicos OTP - One-Time Programmable)</strong>.
+  </p>
+
+  <ul>
+    <li><strong>fusibles microscoopicos en el chip:</strong> El chip nace de la oblea  con una matriz interna de fusibles semiconductores. en su estado virgen de fabrica, todos los fusibles están intactos, lo que representa un valor logico de cero (<code>0</code>).</li>
+    <li><strong>El proceso de quemado (Blowing the Fuse):</strong> Para almacenar informacion permanente en el chip, se le aplica un pulso controlado de sobrecorriente y voltaje de programacioon (generalmente entre 1.5V y 2.5V mediante una bomba de carga interna o un pin). este pulso literalmente <strong>funde o quema fisicamente el filamento microscopico del fusible</strong>, cambiando ese bit a un uno logico (<code>1</code>) de manera permanente e irreversible.</li>
+    <li><strong>el mapa de datos (eFuse Map):</strong> En los chips RTL8188, el mapa de eFuse contiene 512 bytes de datos criticos que definen la identidad del periferico:
+      <ul>
+        <li><strong>Vendor ID y Product ID:</strong> <code>0x0BDA</code> (Realtek) y <code>0xF179</code> (RTL8188FTV).</li>
+        <li><strong>Numero de serie USB:</strong> descriptor de 12 digitos hexadecimales.</li>
+        <li><strong>Dirección fisica MAC:</strong> 6 bytes con el prefijo  asignado legalmente a Realtek (ejemplo: <code>00:E0:4C:</code>).</li>
+        <li><strong>calibracion de Radiofrecuencia (RF):</strong> Potencia de salida (Tx Power) por canal y la calibración del cristal oscilador (Xtal offset), para evitar que el transmisor se desfase de la frecuencia principal ( 2.4 GHz.)</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>¿por que esta antena vino con efuse en 0?</h3>
+  <p>
+    En la fabricacion de marcas oficiales, cada chip pasa por una estacion de prueba donde corre un software industrial llamado <strong>Realtek MPTool (Mass Production Tool)</strong>. Este programa comprueba el radio, calcula la calibracion y quema fisicamente los fusibles en el eFuse con una MAC oficial.
+  </p>
+  <p>
+    En los talleres asiaticos probablemente , de clones genericos ultrabaratos:
+  </p>
+  <ol>
+    <li><strong>El tiempo de ciclo en maquina cuesta dinero:</strong> quemar el eFuse y calibrar cada unidad toma entre 5 y 15 segundos por antena. omitir el paso permite ensamblar miles de dongls mas por hora. seguramente</li>
+    <li><strong>las direcciones MAC del IEEE cuestan dinero:</strong> Registrar bloques oficiales de direcciones MAC ante el IEEE requiere pagar licencias de miles de dólares por cada bloque OUI.</li>
+  </ol>
+  <p>
+    para reducir los costos a la mínima expresion, <strong>ensamblaron el dongle y jamas quemaron el eFuse</strong>. La antena salio al mercado con sus fusibles electronicos completamente virgenes: puros ceros binarios.
+  </p>
+
+  <hr>
+
+  <h2>el conflicto de: capa 2 (Radio) vs Capa 3 (Pila IP)</h2>
+  <p>
+    muchos usuarios creen que si la direccion MAC no es valida, la antena ni siquiera debería conectar a la red Wi-Fi. sin embargo, en redes hay una separacion al parecer estricta de capas:
+  </p>
+
+  <table>
+    <tr>
+      <th>Capa</th>
+      <th>Protocolo</th>
+      <th>Comportamiento con MAC 00:00:00:00:00:00</th>
+    </tr>
+    <tr>
+      <td><strong>Capa 2 (Enlace / 802.11)</strong></td>
+      <td>b aalizas Wi-Fi, Autenticacion, 4Way Handshake WPA2-PSK</td>
+      <td><strong>FFunciono:</strong> El punto de acceso (Access Point) solo comprueba que la contraseña PSK coincida y establece las llaves de criptografia en el canal de radio. el enlace fisico queda estable.</td>
+    </tr>
+    <tr>
+      <td><strong>capa 3 (Red / Pila IP)</strong></td>
+      <td>DHCP (Obtencion de IP) y ARP (Conversion de MAC a IP)</td>
+      <td><strong>La Falla:</strong> Windows envia paquetes <code>DHCPDISCOVER</code> con MAC remitente en ceros asi que el  router descarta el paquete y jamas responde.</td>
+    </tr>
+  </table>
+
+  <div class="box">
+    <strong> y el filtro en el kernel Linux del Router:</strong><br>
+    Practicamente todos los routers domesticos corren Linux (openWrwt, AsusWRT o firmwares basados en BusyBox)en el nucleo de red de Linux (<code>net/ipv4/arp.c</code> y filtros de socket de <code>dnsmasq</code> / <code>udhcpd</code>), existe la validación estandar:
+<pre>if (!is_valid_ether_addr(eth->h_source))
+    goto drop;</pre>
+    Segun el estandar , una direccion de todos ceros <strong>no es una direccion valida</strong>. El router la clasifica como trafico basura/nulo (<em>martian source</em>) y <strong>la desecha</strong>. El router jamas emite un <code>DHCPOFFER</code>. Windows agota los retry y recurre a la IP de fallo <code>169.254.x.x</code>.
+  </div>
+
+  <hr>
+
+  <h2>por que falla en Windows pero no en Linux</h2>
+  <ul>
+    <li><strong>En Linux:</strong> El controlador de codigo abierto de nombre: <code>rtl8188fu</code> tiene contemplado este truco  de los fabricantes. el codigo incluye una condicion expresa: si al leer el effuse detecta que la MAC son ceros (<code>is_zero_ether_addr</code>), llama a <code>eth_random_addr()</code> y genera una MAC valida aleatoria en la memoria RAM del sistema. El usuario ni se entera del defecto de fabrica.</li>
+    <li><strong>en windows:</strong> windows update instala por defecto el controlador mas reciente (versiones 2021 a 2026, modelo <strong>WDI / NDIS 6.70</strong>). Estos controladores modernos leen el efuse en ceros por comandos de control USB, no comprueban si es valido, se lo entregan raw a la red de windows y, por diseno , <strong>ignoran el parametro de registro clasico <code>NetworkAddress</code></strong>.</li>
+  </ul>
+
+  <hr>
+
+  <h2>asi que la solucion obvia es forzar el controlador NDIS 6.20 e inyectar la MAC</h2>
+  <p>
+    como los fusibles de la antena ya no se pueden fundir por hardware sin una estacion de programacion de laboratorio, la solución definitiva en Windows es saltarse la lectura del efuse a nivel de software
+  </p>
+
+  <ol>
+    <li><strong>elimina ar el controlador  bloqueador:</strong> desinstalar los paquetes de drivers recientes (NDIS 6.70) para que Windows no los elija por fecha.</li>
+    <li><strong>instalar el controlador realtek NDIS 6.20 / 6.50 (versión 1030.3.831.2015):</strong> esta version historica de realtek utiliza el modelo Native Wi-Fi de Windows, el cual si consulta la directiva estandar <code>NetworkAddress</code> en la clave de registro del adaptador.</li>
+    <li><strong>inyectar la dirección MAC LAA (Locally Administered Address):</strong> El estándar NDIS exige que las direcciones MAC personalizadas para adaptadores inalambricos tengan activo el bit local (el segundo digito hexadecimal debe ser <strong>2, 6, A o E</strong>, por ejemplo: <code>02:E0:4C:81:88:02</code>).</li>
+    <li><strong>reiniciar el adaptador:</strong> El driver arranca, lee la clave del registro, ignora la eFuse en blanco y registra la MAC válida. El router procesa el DHCP al instante y entrega la IP sin rechistar.</li>
+  </ol>
+
+  <hr>
+
+  <h2>Descarga del paquete y script de reparacion</h2>
+  <p>
+    Prepare un archivo comprimido en mi seccion de <a class="tabgo" href="repositorios.html">repositorios</a> que incluye los archivos limpios del controlador nDIS 6.20 firmados por Realtek y un script automatizado <code>.bat</code> que realiza todo el proceso con un solo clikc:
+  </p>
+
+
+  <h2>ejecutar por comandos</h2>
+  <p>
+    si prefieres hacer la reparacion a mano por terminal, abre PowerShell como Administrador y ejecuta:
+  </p>
+
+<pre># desinstala el driver que bloquea ,  moderno de la tienda de controladores
+pnputil /delete-driver oem37.inf /uninstall /force
+
+# instala el driver NDIS 6.20
+pnputil /add-driver netrtwlanu.inf /install
+
+# asigna una mac (LAA) en el registro de Windows
+Get-ChildItem 'HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}' | ForEach-Object {
+    $p = Get-ItemProperty $_.PSPath
+    if ($p.MatchingDeviceId -like '*VID_0BDA&PID_F179*') {
+        Set-ItemProperty $_.PSPath -Name 'NetworkAddress' -Value '02E04C818802'
+        Write-Host "MAC configurada exitosamente en $($_.PSChildName)"
+    }
+}
+
+# reinicia la interfaz de red
+Get-NetAdapter | Where-Object { $_.InterfaceDescription -match 'Realtek.*8188' } | Restart-NetAdapter</pre>
+
+  <p>
+    al reconectarse al wifi, la antena transmitira con MAC <code>02:E0:4C:81:88:02</code>, el router le asignara su IP por DHCP en menos de 2 mins y la navegacion quedara restaurada al 100%.
+  </p>
+
+  <hr>
+
+  </div>
+
+
+<!-- ------scripts------- -->
+
+    <div class="articulo-footer">
+        <a href="../articulos.html" class="btn-back">volver a la lista de articulos</a>
+        <button class="btn-share" onclick="compartir()">Compartir</button>
+    </div>
+</div>
+
+
+    <!-- ------scripts------- -->
+    <script src="share.js"></script>
+    <!-- ------scripts------- -->
+
+</body>
+</html>
